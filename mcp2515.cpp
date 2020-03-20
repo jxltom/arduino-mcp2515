@@ -485,9 +485,6 @@ MCP2515::ERROR MCP2515::setBitrate(const CAN_SPEED canSpeed, CAN_CLOCK canClock)
 
 MCP2515::ERROR MCP2515::setClkOut(const CAN_CLKOUT divisor)
 {
-    ERROR res;
-    uint8_t cfg3;
-
     if (divisor == CLKOUT_DISABLE) {
 	/* Turn off CLKEN */
 	modifyRegister(MCP_CANCTRL, CANCTRL_CLKEN, 0x00);
@@ -580,6 +577,10 @@ MCP2515::ERROR MCP2515::setFilter(const RXF num, const bool ext, const uint32_t 
 
 MCP2515::ERROR MCP2515::sendMessage(const TXBn txbn, const struct can_frame *frame)
 {
+    if (frame->can_dlc > CAN_MAX_DLEN) {
+        return ERROR_FAILTX;
+    }
+
     const struct TXBn_REGS *txbuf = &TXB[txbn];
 
     uint8_t data[13];
