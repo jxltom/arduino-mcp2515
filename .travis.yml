@@ -3,8 +3,8 @@ language: c
 addons:
   sonarcloud:
     organization: "autowp-github"
-    token:
-      secure: $SONARCLOUD_TOKEN
+    token: $SONAR_TOKEN
 
 script:
-  - sonar-scanner || travis_terminate 1;
+  - build-wrapper-linux-x86-64 --out-dir bw-output make clean all
+  - sonar-scanner -Dsonar.cfamily.build-wrapper-output=bw-output
